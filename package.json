@@ -25,12 +25,16 @@
   "contributors": [],
   "scripts": {
     "dev": "node --watch app.js",
-    "test": ""
+    "linter:check": "npx @biomejs/biome lint ./src app.js",
+    "linter:format": "npx @biomejs/biome format --write ./src app.js"
   },
   "dependencies": {
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^9.0.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.3.7"
   }
 }
