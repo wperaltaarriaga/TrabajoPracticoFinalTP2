@@ -1,5 +1,5 @@
 @Host=http://127.0.0.1
-@Port=3001
+@Port=3004
 @EndpointTemplate = api/songs
 
 ## Get all songs
