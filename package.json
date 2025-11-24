@@ -22,17 +22,13 @@
     "email": "",
     "url": ""
   },
-  "contributors": [
-
-  ],
+  "contributors": [],
   "scripts": {
     "dev": "node --watch app.js",
     "test": ""
   },
   "dependencies": {
-
-  },
-  "devDependencies": {
-
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2"
   }
 }

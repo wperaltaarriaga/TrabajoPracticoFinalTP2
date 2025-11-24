@@ -8,7 +8,7 @@ CancionesRouter.get("/all", CancionesController.getAllSongs)
 //CRUD
 CancionesRouter
     .get("/song/:id", CancionesController.getById)
-    .delete("/:id", CancionesController.deleteById)
+    .delete("/delete/:id", CancionesController.deleteById)
     .post("/create", CancionesController.createByJson)
     .patch("/update", CancionesController.updateByJson)
 
