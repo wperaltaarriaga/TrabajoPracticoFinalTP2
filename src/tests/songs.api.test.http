@@ -1,0 +1,33 @@
+@Host=http://127.0.0.1
+@Port=3001
+@EndpointTemplate = /api/spotify
+
+## Get all songs
+GET  {{Host}}:{{Port}}/{{EndpointTemplate}}/all
+
+## Get song by ID
+GET  {{Host}}:{{Port}}/{{EndpointTemplate}}/song/10
+
+## Get songs by artist 
+
+
+## DELETE song by ID
+DELETE  {{Host}}:{{Port}}/{{EndpointTemplate}}/delete/10
+
+## Create a new song
+POST  {{Host}}:{{Port}}/{{EndpointTemplate}}/create
+Content-Type: application/json
+
+{
+    "title": "New Song",
+    "realase_year": 2024,
+}
+
+## Update a song by ID
+PUT  {{Host}}:{{Port}}/{{EndpointTemplate}}/update
+Content-Type: application/json
+{
+    "id": 10,
+    "title": "Updated Song Title",
+    "realase_year": 2023
+}
