@@ -11,10 +11,10 @@ const songSchema = new Schema(
         author: {
             type: String,      // autor o artista
             maxlength: 200,
+            require: true
         },
         release_year: {
-            type: Number,      // año de lanzamiento
-            require: true
+            type: Number      // año de lanzamiento
         },
         language: {
             type: String,      // idioma

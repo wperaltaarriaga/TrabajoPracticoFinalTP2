@@ -20,15 +20,16 @@ class SongsRepository {
             if (!song) {
                 throw new Error(`Cancion con id ${id} no encontrada`);
             }
+            return song;
         }catch(error){
             console.error("Error al obtener la cancion:", error);
             throw new Error("Error al obtener la cancion: " + error.message);
         }
     }
 
-    async createSong(title,release_year) {
+    async createSong(title,author) {
         try{
-            const existingSong = await this.SongsModel.create({ title, release_year });
+            const existingSong = await this.SongsModel.create({ title, author });
             return existingSong;
         }catch (error){
             console.error("Error al crear la cancion:", error);
@@ -37,11 +38,11 @@ class SongsRepository {
     }
 
 
-    async updateSong(id , {title, release_year}) {
+    async updateSong(id , {title, author}) {
         try{
             const updatedSong = await this.SongsModel.findByIdAndUpdate(
                 id,
-                { title, release_year },
+                { title, author },
                 { new: true }
             );
             if (!updatedSong) {

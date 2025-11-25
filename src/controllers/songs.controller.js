@@ -1,5 +1,5 @@
 import  SongsRepository  from '../repositories/songs.mongoose.repository.js'
-/* import { validateName } from '../validators/validators.model.js' */
+import { validate } from '../validators/validators.model.js' 
 
  export const SongsController = {
     getAllSongs: async (request,response) => {
@@ -53,7 +53,7 @@ import  SongsRepository  from '../repositories/songs.mongoose.repository.js'
                 code: 200,
                 ok: true,
                 payload: {
-                    message: `La cancion :${song.name} ha sido borrada con exito`
+                    message: `La cancion :${song.title} ha sido borrada con exito`
                 }
             })
         } catch (error) {
@@ -65,15 +65,23 @@ import  SongsRepository  from '../repositories/songs.mongoose.repository.js'
     },
     createByJson: async (request,response) => {
         try {
-            const {title, release_year} = request.body 
-            // validacion de datos obligatorios
-            if(!title || !release_year){
+            const {title, author} = request.body 
+
+            const validacionTitle = validate(title);
+            const validacionAuthor = validate(author);
+            
+            if (!validacionTitle.valid || !validacionAuthor.valid) {
                 response.status(422).json({
-                    message: "Faltan datos obligatorios: title y release_year",
-                })
-                return
+                    message: "Faltan datos obligatorios: title y author",
+                    errors: {
+                        title: validacionTitle.message,
+                        author: validacionAuthor.message,
+                    },
+                });
+                return;
             }
-            const newSong = await SongsRepository.createSong( title, release_year )
+
+            const newSong = await SongsRepository.createSong( title, author )
 
             response.status(201).json({
                 ok: true,
@@ -94,7 +102,7 @@ import  SongsRepository  from '../repositories/songs.mongoose.repository.js'
     
     updateByJson: async (request,response) => { 
          try {
-            const {id, title, release_year} = request.body 
+            const {id, title, author} = request.body 
             if (!id) {
                 response.status(422).json({
                     message: "El id es obligatorio para actualizar la cancion",
@@ -102,7 +110,7 @@ import  SongsRepository  from '../repositories/songs.mongoose.repository.js'
                 return
             }
 
-            const updated = await  SongsRepository.updateSong(id, { title, release_year })
+            const updated = await  SongsRepository.updateSong(id, { title, author })
             response.status(200).json({
                 ok: true,
                 payload: {

@@ -6,36 +6,28 @@
 GET  {{Host}}:{{Port}}/{{EndpointTemplate}}/all
 
 ## Get song by ID
-GET  {{Host}}:{{Port}}/{{EndpointTemplate}}/song/10
+GET  {{Host}}:{{Port}}/{{EndpointTemplate}}/song/6924d615d75a06595b4de595
 
 ## Get songs by artist 
 
 
 ## DELETE song by ID
-DELETE  {{Host}}:{{Port}}/{{EndpointTemplate}}/delete/10
+DELETE  {{Host}}:{{Port}}/{{EndpointTemplate}}/delete/6924ec79fa60f9f998552e6b
 
 ## Create a new song
 POST  {{Host}}:{{Port}}/{{EndpointTemplate}}/create
 Content-Type: application/json
 
 {
-    "title": "New Song",
-    "release_year": 2024
+    "title": " Baby ",
+    "author": " Justin Bieber "
 }
 
 ## Update a song by ID
-PUT  {{Host}}:{{Port}}/{{EndpointTemplate}}/update
+PATCH  {{Host}}:{{Port}}/{{EndpointTemplate}}/update
 Content-Type: application/json
 {
-    "id": 10,
+    "id": " 6924e3b5dbfd2ab91103f468",
     "title": "Updated Song Title",
-    "realase_year": 2023
-}
-
-POST  http://127.0.0.1:3001/api/songs/create
-Content-Type: application/json
-
-{
-    "title": "New Song",
-    "release_year": 2024
+    "author": "Justin Bieber"
 }
