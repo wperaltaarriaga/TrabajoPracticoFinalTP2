@@ -4,6 +4,7 @@ class SongsRepository {
 	constructor(songsModel = SongModel) {
 		this.SongsModel = songsModel;
 	}
+
 	async getAll() {
 		try {
 			return await this.SongsModel.find({});
@@ -18,17 +19,24 @@ class SongsRepository {
 			if (!song) {
 				throw new Error(`Cancion con id ${id} no encontrada`);
 			}
+			return song; // Added missing return
 		} catch (error) {
 			console.error("Error al obtener la cancion:", error);
 			throw new Error("Error al obtener la cancion: " + error.message);
 		}
 	}
 
-	async createSong(title, release_year) {
+	async createSong(songData) {
+		// Changed to accept object
 		try {
+			const { title, artist, year, genre, duration, createdBy } = songData; // Destructure fields
 			const existingSong = await this.SongsModel.create({
 				title,
-				release_year,
+				artist,
+				year,
+				genre,
+				duration,
+				createdBy,
 			});
 			return existingSong;
 		} catch (error) {
@@ -37,11 +45,12 @@ class SongsRepository {
 		}
 	}
 
-	async updateSong(id, { title, release_year }) {
+	async updateSong(id, updateData) {
+		// Changed to accept object
 		try {
 			const updatedSong = await this.SongsModel.findByIdAndUpdate(
 				id,
-				{ title, release_year },
+				updateData, // Use the entire updateData object
 				{ new: true },
 			);
 			if (!updatedSong) {
