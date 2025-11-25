@@ -63,17 +63,24 @@ export const SongsController = {
 	},
 	createByJson: async (request, response) => {
 		try {
-			const { title, release_year } = request.body;
-			// validacion de datos obligatorios
+			const { title, release_year, author, language, category } = request.body;
+			
+			// Validación de datos obligatorios
 			if (!title || !release_year) {
 				response.status(422).json({
 					message: "Faltan datos obligatorios: title y release_year",
 				});
 				return;
 			}
-			const newSong = await CancionesRepository.createSong({
+
+			// Crear la canción con el usuario autenticado como creador
+			const newSong = await SongsRepository.createSong({
 				title,
 				release_year,
+				author,
+				language,
+				category,
+				createdBy: request.user.id, // Usuario autenticado como creador
 			});
 
 			response.status(201).json({
