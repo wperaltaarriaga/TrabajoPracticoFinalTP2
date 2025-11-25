@@ -1,6 +1,6 @@
 @Host=http://127.0.0.1
 @Port=3004
-@EndpointTemplate=api/songs
+@EndpointTemplate = api/songs
 
 ## Get all songs
 GET  {{Host}}:{{Port}}/{{EndpointTemplate}}/all

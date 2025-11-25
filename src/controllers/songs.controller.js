@@ -1,10 +1,10 @@
 import  SongsRepository  from '../repositories/songs.mongoose.repository.js'
 import { validate } from '../validators/validators.model.js' 
 
- export const SongsController = {
-    getAllSongs: async (request,response) => {
-        try{
-            const songs = await SongsRepository.getAll() 
+export const SongsController = {
+	getAllSongs: async (request, response) => {
+		try {
+			const songs = await SongsRepository.getAll();
 			response.status(200).json({
 				message: "OK",
 				payload: songs,
@@ -83,20 +83,20 @@ import { validate } from '../validators/validators.model.js'
 
             const newSong = await SongsRepository.createSong( title, author )
 
-            response.status(201).json({
-                ok: true,
-                payload: {
-                    message: `La cancion: ${newSong.title} fue creada exitosamente`,
-                    song: newSong,
-                }
-            })
-        } catch (error) {
-            console.log("Error al crear la cancion", error.message)
-            response.status(500).json({
-                message: "Error interno del servidor"
-            })
-        }
-    },
+			response.status(201).json({
+				ok: true,
+				payload: {
+					message: `La cancion: ${newSong.title} fue creada exitosamente`,
+					song: newSong,
+				},
+			});
+		} catch (error) {
+			console.log("Error al crear la cancion", error.message);
+			response.status(500).json({
+				message: "Error interno del servidor",
+			});
+		}
+	},
 
 
     
@@ -125,5 +125,3 @@ import { validate } from '../validators/validators.model.js'
             })
          }
     }
-
- }

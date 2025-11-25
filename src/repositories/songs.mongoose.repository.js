@@ -1,18 +1,28 @@
 import { SongModel } from "../models/song.mongoose.model.js";
 
 class SongsRepository {
+	constructor(songsModel = SongModel) {
+		this.SongsModel = songsModel;
+	}
+	async getAll() {
+		try {
+			return await this.SongsModel.find({});
+		} catch (error) {
+			throw new Error("Error al obtener las canciones: " + error.message);
+		}
+	}
 
-    constructor(songsModel = SongModel) {
-        this.SongsModel = songsModel;
-    }
-    async getAll() {
-        try{
-            return await this.SongsModel.find({});
-        }
-        catch(error){
-            throw new Error("Error al obtener las canciones: " + error.message);
-        }
-    }
+	async getSongById(id) {
+		try {
+			const song = await this.SongsModel.findById(id);
+			if (!song) {
+				throw new Error(`Cancion con id ${id} no encontrada`);
+			}
+		} catch (error) {
+			console.error("Error al obtener la cancion:", error);
+			throw new Error("Error al obtener la cancion: " + error.message);
+		}
+	}
 
     async getSongById(id) {
         try{
