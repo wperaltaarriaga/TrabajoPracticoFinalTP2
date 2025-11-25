@@ -1,0 +1,72 @@
+@Host=http://127.0.0.1
+@Port=3004
+@EndpointTemplate = api/users
+@userId = 
+### Obtener todos los usuarios
+GET {{Host}}:{{Port}}{{EndpointTemplate}}/all
+Content-Type: application/json
+
+###
+
+### Obtener usuario por ID
+GET {{Host}}:{{Port}}/{{EndpointTemplate}}/user/{{userId}}
+Content-Type: application/json
+
+###
+
+### Crear un nuevo usuario
+POST {{Host}}:{{Port}}{{EndpointTemplate}}/create
+Content-Type: application/json
+
+{
+  "name": "Juan Pérez",
+  "email": "juan.perez@example.com",
+  "password": "password123",
+  "age": 25,
+  "role": "user"
+}
+
+###
+
+### Crear un usuario admin
+POST {{Host}}:{{Port}}{{EndpointTemplate}}/create
+Content-Type: application/json
+
+{
+  "name": "Admin User",
+  "email": "admin@example.com",
+  "password": "admin123",
+  "age": 30,
+  "role": "admin"
+}
+
+###
+
+### Actualizar usuario
+PATCH {{Host}}:{{Port}}{{EndpointTemplate}}/update
+Content-Type: application/json
+
+{
+  "id": "{{userId}}",
+  "name": "Juan Carlos Pérez",
+  "email": "juan.carlos@example.com",
+  "age": 26
+}
+
+###
+
+### Actualizar estado del usuario
+PATCH {{Host}}:{{Port}}{{EndpointTemplate}}/status/{{userId}}
+Content-Type: application/json
+
+{
+  "isActive": false
+}
+
+###
+
+### Eliminar usuario
+DELETE {{Host}}:{{Port}}{{EndpointTemplate}}/delete/{{userId}}
+Content-Type: application/json
+
+###
