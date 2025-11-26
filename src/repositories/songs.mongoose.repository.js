@@ -26,18 +26,22 @@ class SongsRepository {
 		}
 	}
 
-	async createSong(songData) {
-		// Changed to accept object
+	async getSongById(id) {
 		try {
-			const { title, artist, year, genre, duration, createdBy } = songData; // Destructure fields
-			const existingSong = await this.SongsModel.create({
-				title,
-				artist,
-				year,
-				genre,
-				duration,
-				createdBy,
-			});
+			const song = await this.SongsModel.findById(id);
+			if (!song) {
+				throw new Error(`Cancion con id ${id} no encontrada`);
+			}
+			return song;
+		} catch (error) {
+			console.error("Error al obtener la cancion:", error);
+			throw new Error("Error al obtener la cancion: " + error.message);
+		}
+	}
+
+	async createSong(title, author) {
+		try {
+			const existingSong = await this.SongsModel.create({ title, author });
 			return existingSong;
 		} catch (error) {
 			console.error("Error al crear la cancion:", error);
@@ -45,12 +49,11 @@ class SongsRepository {
 		}
 	}
 
-	async updateSong(id, updateData) {
-		// Changed to accept object
+	async updateSong(id, { title, author }) {
 		try {
 			const updatedSong = await this.SongsModel.findByIdAndUpdate(
 				id,
-				updateData, // Use the entire updateData object
+				{ title, author },
 				{ new: true },
 			);
 			if (!updatedSong) {

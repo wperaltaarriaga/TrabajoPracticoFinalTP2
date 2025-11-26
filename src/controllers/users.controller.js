@@ -1,6 +1,10 @@
 import UsersRepository from "../repositories/users.mongoose.repository.js";
 import bcrypt from 'bcrypt';
 import { signToken } from '../auth/index.js';
+import { validateEmail } from "../validators/validator.model.js";
+import { validate } from "../validators/validator.model.js";
+import { Parser } from 'json2csv';
+import e from "express";
 
 export const UsersController = {
 	getAllUsers: async (request, response) => {
@@ -43,13 +47,13 @@ export const UsersController = {
 		try {
 			const { id } = request.params;
 			const user = await UsersRepository.getUserById(id);
-			
+
 			if (!user) {
-				return response.status(422).json({ 
-					error: "El usuario no existe" 
+				return response.status(422).json({
+					error: "El usuario no existe",
 				});
 			}
-			
+
 			await UsersRepository.deleteUser(id);
 			response.json({
 				code: 200,
@@ -69,17 +73,14 @@ export const UsersController = {
 	createByJson: async (request, response) => {
 		try {
 			const { name, email, password, age, role } = request.body;
-			
-			if (!name || !email || !password) {
-				return response.status(422).json({
-					message: "Faltan datos obligatorios: name, email y password",
-				});
-			}
 
-			const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-			if (!emailRegex.test(email)) {
+			const validEmail = validateEmail(email)
+			const validName = validate(name)
+			const validPassword = validate(password)
+
+			if (!validName || !validEmail || !validPassword) {
 				return response.status(422).json({
-					message: "Formato de email inválido",
+					message: "completar los datos correctamente",
 				});
 			}
 
@@ -98,7 +99,7 @@ export const UsersController = {
 				email,
 				password: hashedPassword,
 				age,
-				role: role || 'user'
+				role: role || "user",
 			});
 
 			response.status(201).json({
@@ -188,7 +189,7 @@ export const UsersController = {
 	updateByJson: async (request, response) => {
 		try {
 			const { id, name, email, age, role, isActive } = request.body;
-			
+
 			if (!id) {
 				return response.status(422).json({
 					message: "El id es obligatorio para actualizar el usuario",
@@ -219,7 +220,7 @@ export const UsersController = {
 			if (isActive !== undefined) updateData.isActive = isActive;
 
 			const updated = await UsersRepository.updateUser(id, updateData);
-			
+
 			response.status(200).json({
 				ok: true,
 				payload: {
@@ -229,7 +230,10 @@ export const UsersController = {
 			});
 		} catch (error) {
 			console.log("Error al actualizar el usuario", error.message);
-			if (error.message.includes("no encontrado") || error.message.includes("not found")) {
+			if (
+				error.message.includes("no encontrado") ||
+				error.message.includes("not found")
+			) {
 				return response.status(404).json({
 					message: "Usuario no encontrado",
 				});
@@ -257,7 +261,7 @@ export const UsersController = {
 			}
 
 			const updated = await UsersRepository.updateUserStatus(id, isActive);
-			
+
 			response.status(200).json({
 				ok: true,
 				payload: {
@@ -275,6 +279,60 @@ export const UsersController = {
 			response.status(500).json({
 				message: "Error interno del servidor",
 			});
+		}
+	},
+
+	/* 
+	Caso de Uso: Indicadores de Usuarios
+	Calcula:
+	Promedio de edad de los usuarios.
+	Distribución de roles (porcentaje de administradores vs usuarios normales).
+	Usuarios más jóvenes y más viejos. */
+	async getUserIndicators(request,response) {
+		try {
+			const users = await UsersRepository.getAll();
+			const totalUsers = users.length;
+			const totalAge = users.reduce((sum, user) => sum + user.age, 0);
+			const roleDistribution = users.reduce((acc, user) => {
+				acc[user.role] = (acc[user.role] || 0) + 1;
+				return acc;
+			}, {});
+	
+			const youngestUser = users.reduce((youngest, user) =>
+				user.age < youngest.age ? user : youngest
+			);
+			const oldestUser = users.reduce((oldest, user) =>
+				user.age > oldest.age ? user : oldest
+			);
+	
+			response.status(200).json({
+				totalUsers,
+				averageAge: totalAge / totalUsers,
+				roleDistribution,
+				youngestUser,
+				oldestUser,
+			});
+		} catch (error) {
+			console.error("Error al calcular indicadores:", error.message);
+			response.status(500).json({ message: "Error interno del servidor" });
+		}
+	},
+
+	/* Exportar Usuarios
+	Permite a los administradores exportar la lista de usuarios en formato CSV. */
+	exportUsers: async (request, response) => {
+		try {
+			const users = await UsersRepository.getAllUsers();
+			const fields = ['name', 'email', 'age', 'role'];
+			const json2csvParser = new Parser({ fields });
+			const csv = json2csvParser.parse(users);
+
+			response.header('Content-Type', 'text/csv');
+			response.attachment('users.csv');
+			response.send(csv);
+		} catch (error) {
+			console.error("Error al exportar usuarios:", error.message);
+			response.status(500).json({ message: "Error interno del servidor" });
 		}
 	},
 };
